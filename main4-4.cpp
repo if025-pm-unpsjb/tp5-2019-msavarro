@@ -91,15 +91,16 @@ thread1 (void *params)
       led1 = !led1;
       TickType_t t2 = xTaskGetTickCount();
       TickType_t t3 = t2;
-      while(t3 < t2+(datos->c*1000)){
+      //Multiplicamos por 1100 para que todas las tareas ejecuten un poco de tiempo de mas
+      while(t3 < t2+(datos->c*1100)){
           t3 = xTaskGetTickCount();
       }
-      //pc.printf("Hola");
       pc.printf("Tarea %d [%d, %d, %d]\n\r",datos->name,t,t3,x);
-      /*for(int i=0; i < datos->c; i++){
-          noHacerNada();
-      }*/
       x++;
+      //Si el tick actual es mayor que el tiempo en que la tarea debio vencerse, efectivamente se vencio
+      if( (t + datos->t*1000) < xTaskGetTickCount()){
+          pc.printf("Tarea %d SE VENCIOOOOO, tendria q haber terminado en %d\n\r",datos->name,(t + datos->t*1000));
+      }
       vTaskDelayUntil (&t, datos->t*1000);
     }
 }
